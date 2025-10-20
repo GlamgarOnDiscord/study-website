@@ -170,6 +170,12 @@
 						</div>
 					</form>
 
+					<div class="todo-filters">
+						<button class="filter-btn active" data-filter="all">Toutes</button>
+						<button class="filter-btn" data-filter="active">Actives</button>
+						<button class="filter-btn" data-filter="completed">Complétées</button>
+					</div>
+
 					<ul id="todo-list" class="todo-list" role="list"></ul>
 
 					<div class="todo-stats">
@@ -286,6 +292,12 @@
 					</form>
 
 					<div class="flashcard-actions">
+						<button id="flashcard-study-mode" class="btn btn-primary btn-icon" aria-label="Mode étude">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M12 14L21 9L12 4L3 9L12 14ZM12 14L18.16 10.36C18.69 11.3 19 12.38 19 13.5C19 17.09 16.09 20 12.5 20H12M12 14V20.5M9 20C9 18.34 10.34 17 12 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<span>Mode Étude</span>
+						</button>
 						<button id="flashcard-random" class="btn btn-secondary btn-icon" aria-label="Afficher une carte aléatoire">
 							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M16 3H21V8M4 20L21 3M21 16V21H16M15 15L21 21M4 4L9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -311,8 +323,101 @@
 				</svg>
 				par <strong>Glamgar</strong>
 			</p>
+			<div class="footer-actions">
+				<button id="export-data" class="btn-footer" aria-label="Exporter les données">
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>Export</span>
+				</button>
+				<button id="import-data" class="btn-footer" aria-label="Importer les données">
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>Import</span>
+				</button>
+			</div>
 		</div>
 	</footer>
+
+	<!-- Modal Mode Étude Flashcards -->
+	<div id="study-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="study-modal-title">
+		<div class="modal-overlay"></div>
+		<div class="modal-content">
+			<button class="modal-close" aria-label="Fermer le mode étude">
+				<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+				</svg>
+			</button>
+
+			<div class="study-header">
+				<h2 id="study-modal-title" class="study-title">Mode Étude</h2>
+				<div class="study-progress">
+					<span class="progress-text">
+						<span id="study-current">1</span> / <span id="study-total">0</span>
+					</span>
+					<div class="progress-bar">
+						<div class="progress-fill" id="study-progress-fill"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="study-card-container">
+				<div class="study-card" id="study-card">
+					<div class="study-card-inner">
+						<div class="study-card-front">
+							<div class="study-card-label">Question</div>
+							<div class="study-card-content" id="study-question">Cliquez pour commencer</div>
+						</div>
+						<div class="study-card-back">
+							<div class="study-card-label">Réponse</div>
+							<div class="study-card-content" id="study-answer">Réponse ici</div>
+						</div>
+					</div>
+					<button class="study-flip-hint">
+						<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12H20M4 12L8 8M4 12L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<span>Cliquez pour voir la réponse</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="study-controls">
+				<button id="study-prev" class="btn btn-outline btn-icon" aria-label="Carte précédente">
+					<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M15 19L8 12L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>Précédent</span>
+				</button>
+
+				<button id="study-shuffle" class="btn btn-secondary" aria-label="Mélanger">
+					<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M16 3H21V8M4 20L21 3M21 16V21H16M15 15L21 21M4 4L9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>Mélanger</span>
+				</button>
+
+				<button id="study-next" class="btn btn-primary btn-icon" aria-label="Carte suivante">
+					<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>Suivant</span>
+				</button>
+			</div>
+
+			<div class="study-options">
+				<label class="checkbox-label">
+					<input type="checkbox" id="study-auto-flip" class="checkbox-input">
+					<span class="checkbox-custom"></span>
+					<span>Retourner automatiquement après 3s</span>
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<!-- Input caché pour import de fichier -->
+	<input type="file" id="import-file-input" accept=".json" style="display: none;" aria-label="Sélectionner un fichier à importer">
 
 </body>
 </html>
