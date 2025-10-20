@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Nouvelles Fonctionnalités</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0A0E1A;
+            color: white;
+        }
+        .test-item {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #00BFFF;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success {
+            border-color: #00FF00;
+        }
+        .error {
+            border-color: #FF0000;
+        }
+        h1 {
+            color: #00BFFF;
+            text-align: center;
+        }
+        button {
+            background: linear-gradient(135deg, #00BFFF 0%, #0080FF 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0,191,255,0.5);
+        }
+        .code {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test des Nouvelles Fonctionnalités</h1>
+
+    <div class="test-item">
+        <h2>✅ Test 1: Modal Mode Étude existe ?</h2>
+        <button onclick="testModal()">Tester le Modal</button>
+        <div id="modal-result"></div>
+    </div>
+
+    <div class="test-item">
+        <h2>✅ Test 2: Filtres To-Do existent ?</h2>
+        <button onclick="testFilters()">Tester les Filtres</button>
+        <div id="filter-result"></div>
+    </div>
+
+    <div class="test-item">
+        <h2>✅ Test 3: Export/Import existent ?</h2>
+        <button onclick="testExport()">Tester Export/Import</button>
+        <div id="export-result"></div>
+    </div>
+
+    <div class="test-item">
+        <h2>📊 Résumé</h2>
+        <div id="summary">Clique sur les boutons ci-dessus pour tester</div>
+    </div>
+
+    <script>
+        function testModal() {
+            const modal = document.getElementById('study-modal');
+            const result = document.getElementById('modal-result');
+
+            if (modal) {
+                result.innerHTML = '<div class="code" style="color: #00FF00;">✅ SUCCESS: Le modal existe dans index.html !</div>';
+                result.innerHTML += '<p>Ouvre index.html et cherche le bouton "Mode Étude" dans la section Flashcards.</p>';
+            } else {
+                result.innerHTML = '<div class="code" style="color: #FF0000;">❌ ERREUR: Modal non trouvé. Tu regardes le mauvais fichier !</div>';
+            }
+        }
+
+        function testFilters() {
+            const filters = document.querySelectorAll('.filter-btn');
+            const result = document.getElementById('filter-result');
+
+            if (filters.length === 3) {
+                result.innerHTML = '<div class="code" style="color: #00FF00;">✅ SUCCESS: 3 boutons filtres trouvés !</div>';
+                result.innerHTML += '<p>Ouvre index.html et cherche "Toutes / Actives / Complétées" dans la section To-Do.</p>';
+            } else {
+                result.innerHTML = '<div class="code" style="color: #FF0000;">❌ ERREUR: Filtres non trouvés (' + filters.length + '/3)</div>';
+            }
+        }
+
+        function testExport() {
+            const exportBtn = document.getElementById('export-data');
+            const importBtn = document.getElementById('import-data');
+            const result = document.getElementById('export-result');
+
+            if (exportBtn && importBtn) {
+                result.innerHTML = '<div class="code" style="color: #00FF00;">✅ SUCCESS: Boutons Export/Import trouvés !</div>';
+                result.innerHTML += '<p>Ouvre index.html et cherche les boutons dans le footer en bas.</p>';
+            } else {
+                result.innerHTML = '<div class="code" style="color: #FF0000;">❌ ERREUR: Boutons Export/Import non trouvés</div>';
+            }
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            console.log('🔍 Vérification automatique...');
+
+            // Test si on est dans test-features.html ou index.html
+            const isTestFile = window.location.href.includes('test-features.html');
+            const summary = document.getElementById('summary');
+
+            if (isTestFile) {
+                summary.innerHTML = `
+                    <div class="code" style="color: #FF9900;">
+                        ⚠️ Tu es sur test-features.html
+                        <br><br>
+                        Pour voir les fonctionnalités, ouvre <strong>index.html</strong> !
+                        <br><br>
+                        Ce fichier sert juste à vérifier que les éléments existent dans le code.
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
