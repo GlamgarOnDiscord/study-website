@@ -1,61 +1,318 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="./src/css/style.css" />
-    <script src="https://kit.fontawesome.com/82d3eb6132.js" crossorigin="anonymous"></script>	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Application d'étude moderne avec timer Pomodoro, to-do list, notes et flashcards">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./src/css/style.css">
 	<script src="./src/js/main.js" defer></script>
-	<title>Study website</title>
+	<title>Study Hub - Boostez votre productivité</title>
 </head>
 <body>
 
-	<!-- Minuteur -->
-	<div class="timer">
-		<div class="timer">25:00</div>
-		<button id="start">Jouer</button>
-		<button id="pause">Pause</button>
-		<button id="stop">Réinitialiser</button>
-		<button id="music"><i class="fas fa-music"></i></button>
+	<!-- Background decoratif animé -->
+	<div class="bg-decoration" aria-hidden="true">
+		<svg class="bg-svg bg-svg-1" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+			<defs>
+				<linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+					<stop offset="0%" style="stop-color:#00BFFF;stop-opacity:0.3" />
+					<stop offset="100%" style="stop-color:#0080FF;stop-opacity:0.1" />
+				</linearGradient>
+			</defs>
+			<circle class="floating-circle" cx="150" cy="150" r="100" fill="url(#gradient1)" />
+			<circle class="floating-circle" cx="650" cy="600" r="120" fill="url(#gradient1)" />
+			<path class="animated-line" d="M 100 400 Q 400 200 700 400" stroke="#00BFFF" stroke-width="2" fill="none" opacity="0.2" />
+		</svg>
 	</div>
 
-	<!-- To-do list -->
+	<!-- Header / Hero Section -->
+	<header class="hero">
+		<div class="container">
+			<span class="badge" data-animate="fade-up">
+				<svg class="badge-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
+				</svg>
+				Productivité améliorée
+			</span>
+			<h1 class="hero-title" data-animate="fade-up" data-delay="100">
+				Étudiez plus <span class="text-gradient">intelligemment</span>
+			</h1>
+			<p class="hero-subtitle" data-animate="fade-up" data-delay="200">
+				Boostez votre concentration avec notre suite d'outils d'étude complète
+			</p>
+		</div>
+	</header>
 
-	<div class="todo">
-		<h2>Liste de tâches</h2>
-		<form>
-		  <input type="text" id="todo-input" placeholder="Ajouter une tâche">
-		  <button type="button" id="todo-add">Ajouter</button>
-		</form>
-		<ul id="todo-list"></ul>
-	  </div>
+	<main class="main-content">
+		<div class="container">
 
-	  <!-- Notes -->
+			<!-- Section Timer Pomodoro -->
+			<section class="section timer-section" id="timer-section" data-animate="fade-up">
+				<div class="section-bg-pattern" aria-hidden="true">
+					<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+						<defs>
+							<linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#00BFFF;stop-opacity:0.15" />
+								<stop offset="100%" style="stop-color:#0080FF;stop-opacity:0.05" />
+							</linearGradient>
+						</defs>
+						<circle class="pulse-circle" cx="200" cy="150" r="80" fill="url(#timerGradient)" />
+						<circle class="pulse-circle pulse-delay-1" cx="200" cy="150" r="60" fill="url(#timerGradient)" />
+						<circle class="pulse-circle pulse-delay-2" cx="200" cy="150" r="40" fill="url(#timerGradient)" />
+					</svg>
+				</div>
 
-	<!-- <div class="notes">
-		<h2>Notes</h2>
-		<form>
-			<textarea id="notes-input" placeholder="Ajouter une note"></textarea>
-			<button type="button" id="notes-add">Ajouter</button>
-		</form>
-		<ul id="notes-list"></ul>
-	</div> -->
+				<div class="section-header">
+					<div class="section-icon">
+						<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+							<path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+					</div>
+					<h2 class="section-title">Minuteur Pomodoro</h2>
+				</div>
 
-	<!-- Flashcards -->
+				<div class="timer-card glass-card">
+					<div class="timer-display" id="timer-display" role="timer" aria-live="polite" aria-atomic="true">
+						<span class="time-value">25:00</span>
+					</div>
 
-<!-- <div class="flashcards">
-	<h2>Flashcards</h2>
-	<form>
-		<input type="text" id="flashcard-question" placeholder="Question">
-		<input type="text" id="flashcard-answer" placeholder="Réponse">
-		<button type="button" id="flashcard-add">Ajouter</button>
-	</form>
-	<div id="flashcard-container"></div>
-	<div class="flashcard-actions">
-		<button id="flashcard-random">Carte au hasard</button>
-	</div>
-</div> -->
+					<div class="timer-controls">
+						<button id="start" class="btn btn-primary btn-icon" aria-label="Démarrer le minuteur">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+							</svg>
+							<span>Démarrer</span>
+						</button>
 
- <!-- Plus tard -->
+						<button id="pause" class="btn btn-secondary btn-icon" aria-label="Mettre en pause">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+								<rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+							</svg>
+							<span>Pause</span>
+						</button>
+
+						<button id="stop" class="btn btn-outline btn-icon" aria-label="Réinitialiser le minuteur">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M4 4V9H4.58152M19.9381 11C19.446 7.05369 16.0796 4 12 4C9.58152 4 7.41644 5.11383 6.00736 6.86617M4.58152 9H9M4.58152 9L4.58152 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M20 20V15H19.4185M4.06189 13C4.55399 16.9463 7.92038 20 12 20C14.4185 20 16.5836 18.8862 17.9926 17.1338M19.4185 15H15M19.4185 15V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<span>Réinitialiser</span>
+						</button>
+
+						<button id="music" class="btn btn-music" aria-label="Lecture musique d'ambiance">
+							<svg class="btn-icon-svg icon-music" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M9 18V5L21 3V16M9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.3431 4.34315 15 6 15C7.65685 15 9 16.3431 9 18ZM21 16C21 17.6569 19.6569 19 18 19C16.3431 19 15 17.6569 15 16C15 14.3431 16.3431 13 18 13C19.6569 13 21 14.3431 21 16ZM9 10L21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<svg class="btn-icon-svg icon-pause" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+								<rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+								<rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+							</svg>
+						</button>
+					</div>
+
+					<div class="timer-presets">
+						<button class="preset-btn" data-minutes="15" aria-label="Définir 15 minutes">15 min</button>
+						<button class="preset-btn active" data-minutes="25" aria-label="Définir 25 minutes">25 min</button>
+						<button class="preset-btn" data-minutes="45" aria-label="Définir 45 minutes">45 min</button>
+					</div>
+				</div>
+			</section>
+
+			<!-- Section To-Do List -->
+			<section class="section todo-section" id="todo-section" data-animate="fade-up">
+				<div class="section-bg-pattern" aria-hidden="true">
+					<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+						<defs>
+							<linearGradient id="todoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#00BFFF;stop-opacity:0.1" />
+								<stop offset="100%" style="stop-color:#00D4FF;stop-opacity:0.05" />
+							</linearGradient>
+						</defs>
+						<rect class="animated-rect" x="50" y="50" width="120" height="8" rx="4" fill="url(#todoGradient)" />
+						<rect class="animated-rect" x="50" y="80" width="160" height="8" rx="4" fill="url(#todoGradient)" />
+						<rect class="animated-rect" x="50" y="110" width="100" height="8" rx="4" fill="url(#todoGradient)" />
+						<circle cx="30" cy="54" r="6" fill="#00BFFF" opacity="0.3" />
+						<circle cx="30" cy="84" r="6" fill="#00BFFF" opacity="0.3" />
+						<circle cx="30" cy="114" r="6" fill="#00BFFF" opacity="0.3" />
+					</svg>
+				</div>
+
+				<div class="section-header">
+					<div class="section-icon">
+						<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M12 12H15M12 16H15M9 12H9.01M9 16H9.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+					</div>
+					<h2 class="section-title">Liste de tâches</h2>
+				</div>
+
+				<div class="todo-card glass-card">
+					<form class="todo-form" id="todo-form" role="form">
+						<div class="input-group">
+							<input
+								type="text"
+								id="todo-input"
+								class="input-field"
+								placeholder="Ajouter une nouvelle tâche..."
+								aria-label="Nouvelle tâche"
+								required
+							>
+							<button type="submit" class="btn btn-primary btn-add" aria-label="Ajouter la tâche">
+								<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+								</svg>
+							</button>
+						</div>
+					</form>
+
+					<ul id="todo-list" class="todo-list" role="list"></ul>
+
+					<div class="todo-stats">
+						<span class="stat-item">
+							<span class="stat-label">Total:</span>
+							<span class="stat-value" id="todo-total">0</span>
+						</span>
+						<span class="stat-item">
+							<span class="stat-label">Complétées:</span>
+							<span class="stat-value" id="todo-completed">0</span>
+						</span>
+					</div>
+				</div>
+			</section>
+
+			<!-- Section Notes -->
+			<section class="section notes-section" id="notes-section" data-animate="fade-up">
+				<div class="section-bg-pattern" aria-hidden="true">
+					<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+						<defs>
+							<linearGradient id="notesGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#00BFFF;stop-opacity:0.12" />
+								<stop offset="100%" style="stop-color:#00FFD1;stop-opacity:0.06" />
+							</linearGradient>
+						</defs>
+						<rect x="80" y="60" width="200" height="180" rx="8" fill="url(#notesGradient)" />
+						<line x1="100" y1="100" x2="250" y2="100" stroke="#00BFFF" stroke-width="2" opacity="0.2" class="draw-line" />
+						<line x1="100" y1="130" x2="230" y2="130" stroke="#00BFFF" stroke-width="2" opacity="0.2" class="draw-line" />
+						<line x1="100" y1="160" x2="240" y2="160" stroke="#00BFFF" stroke-width="2" opacity="0.2" class="draw-line" />
+					</svg>
+				</div>
+
+				<div class="section-header">
+					<div class="section-icon">
+						<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M9 11H15M9 15H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+					</div>
+					<h2 class="section-title">Notes rapides</h2>
+				</div>
+
+				<div class="notes-card glass-card">
+					<form class="notes-form" id="notes-form" role="form">
+						<textarea
+							id="notes-input"
+							class="textarea-field"
+							placeholder="Écrire une note rapide..."
+							rows="3"
+							aria-label="Nouvelle note"
+							required
+						></textarea>
+						<button type="submit" class="btn btn-primary btn-full" aria-label="Ajouter la note">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+							</svg>
+							<span>Ajouter la note</span>
+						</button>
+					</form>
+
+					<div id="notes-list" class="notes-grid"></div>
+				</div>
+			</section>
+
+			<!-- Section Flashcards -->
+			<section class="section flashcards-section" id="flashcards-section" data-animate="fade-up">
+				<div class="section-bg-pattern" aria-hidden="true">
+					<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+						<defs>
+							<linearGradient id="flashGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#00BFFF;stop-opacity:0.15" />
+								<stop offset="100%" style="stop-color:#00A8FF;stop-opacity:0.05" />
+							</linearGradient>
+						</defs>
+						<rect class="floating-card" x="60" y="80" width="140" height="100" rx="8" fill="url(#flashGradient)" />
+						<rect class="floating-card" x="150" y="100" width="140" height="100" rx="8" fill="url(#flashGradient)" opacity="0.7" />
+					</svg>
+				</div>
+
+				<div class="section-header">
+					<div class="section-icon">
+						<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M7 8H17M7 12H17M7 16H13M5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+					</div>
+					<h2 class="section-title">Flashcards</h2>
+				</div>
+
+				<div class="flashcards-card glass-card">
+					<form class="flashcard-form" id="flashcard-form" role="form">
+						<div class="form-grid">
+							<input
+								type="text"
+								id="flashcard-question"
+								class="input-field"
+								placeholder="Question..."
+								aria-label="Question de la flashcard"
+								required
+							>
+							<input
+								type="text"
+								id="flashcard-answer"
+								class="input-field"
+								placeholder="Réponse..."
+								aria-label="Réponse de la flashcard"
+								required
+							>
+						</div>
+						<button type="submit" class="btn btn-primary btn-full" aria-label="Créer la flashcard">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+							</svg>
+							<span>Créer la flashcard</span>
+						</button>
+					</form>
+
+					<div class="flashcard-actions">
+						<button id="flashcard-random" class="btn btn-secondary btn-icon" aria-label="Afficher une carte aléatoire">
+							<svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M16 3H21V8M4 20L21 3M21 16V21H16M15 15L21 21M4 4L9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<span>Carte aléatoire</span>
+						</button>
+					</div>
+
+					<div id="flashcard-container" class="flashcard-grid"></div>
+				</div>
+			</section>
+
+		</div>
+	</main>
+
+	<!-- Footer -->
+	<footer class="footer">
+		<div class="container">
+			<p class="footer-text">
+				Créé avec
+				<svg class="footer-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.03L12 21.35Z"/>
+				</svg>
+				par <strong>Glamgar</strong>
+			</p>
+		</div>
+	</footer>
+
 </body>
 </html>
