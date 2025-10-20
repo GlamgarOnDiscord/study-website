@@ -668,7 +668,7 @@ modalOverlay.addEventListener('click', closeStudyMode);
 studyCard.addEventListener('click', toggleStudyCardFlip);
 
 studyPrevBtn.addEventListener('click', prevCard);
-studyNextBtn.addEventListener('click', nextCard');
+studyNextBtn.addEventListener('click', nextCard);
 studyShuffleBtn.addEventListener('click', shuffleCards);
 
 studyAutoFlipCheckbox.addEventListener('change', (e) => {
