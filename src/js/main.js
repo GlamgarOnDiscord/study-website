@@ -10,6 +10,18 @@ let todos = [];
 let flashcards = [];
 let notes = [];
 
+// Study mode state
+let studyMode = {
+	isActive: false,
+	currentIndex: 0,
+	cards: [],
+	autoFlip: false,
+	autoFlipTimeout: null
+};
+
+// Todo filter state
+let todoFilter = 'all'; // 'all', 'active', 'completed'
+
 // ================================
 // DOM Elements
 // ================================
@@ -35,6 +47,30 @@ const flashcardQuestion = document.getElementById('flashcard-question');
 const flashcardAnswer = document.getElementById('flashcard-answer');
 const flashcardContainer = document.getElementById('flashcard-container');
 const flashcardRandomBtn = document.getElementById('flashcard-random');
+const flashcardStudyBtn = document.getElementById('flashcard-study-mode');
+
+// Study Modal
+const studyModal = document.getElementById('study-modal');
+const studyCard = document.getElementById('study-card');
+const studyQuestion = document.getElementById('study-question');
+const studyAnswer = document.getElementById('study-answer');
+const studyCurrent = document.getElementById('study-current');
+const studyTotal = document.getElementById('study-total');
+const studyProgressFill = document.getElementById('study-progress-fill');
+const studyPrevBtn = document.getElementById('study-prev');
+const studyNextBtn = document.getElementById('study-next');
+const studyShuffleBtn = document.getElementById('study-shuffle');
+const studyAutoFlipCheckbox = document.getElementById('study-auto-flip');
+const modalClose = document.querySelector('.modal-close');
+const modalOverlay = document.querySelector('.modal-overlay');
+
+// Todo Filters
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+// Export/Import
+const exportBtn = document.getElementById('export-data');
+const importBtn = document.getElementById('import-data');
+const importFileInput = document.getElementById('import-file-input');
 
 const audio = new Audio('./src/musique/music2.mp3');
 audio.loop = true;
@@ -177,7 +213,15 @@ function deleteTodo(id) {
 function renderTodos() {
 	todoList.innerHTML = '';
 
-	todos.forEach((todo, index) => {
+	// Filter todos based on current filter
+	let filteredTodos = todos;
+	if (todoFilter === 'active') {
+		filteredTodos = todos.filter(t => !t.completed);
+	} else if (todoFilter === 'completed') {
+		filteredTodos = todos.filter(t => t.completed);
+	}
+
+	filteredTodos.forEach((todo, index) => {
 		const li = document.createElement('li');
 		li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
 		li.style.animationDelay = `${index * 0.05}s`;
@@ -362,6 +406,187 @@ function showRandomFlashcard() {
 }
 
 // ================================
+// Study Mode Functions
+// ================================
+function openStudyMode() {
+	if (flashcards.length === 0) {
+		alert('Créez d\'abord des flashcards pour commencer le mode étude !');
+		return;
+	}
+
+	studyMode.isActive = true;
+	studyMode.currentIndex = 0;
+	studyMode.cards = [...flashcards]; // Copy array
+
+	studyModal.classList.add('active');
+	document.body.style.overflow = 'hidden';
+
+	updateStudyCard();
+}
+
+function closeStudyMode() {
+	studyMode.isActive = false;
+	studyModal.classList.remove('active');
+	document.body.style.overflow = '';
+
+	// Reset auto flip
+	if (studyMode.autoFlipTimeout) {
+		clearTimeout(studyMode.autoFlipTimeout);
+	}
+	studyCard.classList.remove('flipped');
+}
+
+function updateStudyCard() {
+	if (studyMode.cards.length === 0) return;
+
+	const current = studyMode.cards[studyMode.currentIndex];
+	studyQuestion.textContent = current.question;
+	studyAnswer.textContent = current.answer;
+
+	// Update progress
+	studyCurrent.textContent = studyMode.currentIndex + 1;
+	studyTotal.textContent = studyMode.cards.length;
+
+	const progress = ((studyMode.currentIndex + 1) / studyMode.cards.length) * 100;
+	studyProgressFill.style.width = `${progress}%`;
+
+	// Reset card flip
+	studyCard.classList.remove('flipped');
+
+	// Auto flip if enabled
+	if (studyMode.autoFlip) {
+		studyMode.autoFlipTimeout = setTimeout(() => {
+			studyCard.classList.add('flipped');
+		}, 3000);
+	}
+}
+
+function nextCard() {
+	if (studyMode.autoFlipTimeout) {
+		clearTimeout(studyMode.autoFlipTimeout);
+	}
+
+	if (studyMode.currentIndex < studyMode.cards.length - 1) {
+		studyMode.currentIndex++;
+		updateStudyCard();
+	} else {
+		// Loop back to start
+		studyMode.currentIndex = 0;
+		updateStudyCard();
+	}
+}
+
+function prevCard() {
+	if (studyMode.autoFlipTimeout) {
+		clearTimeout(studyMode.autoFlipTimeout);
+	}
+
+	if (studyMode.currentIndex > 0) {
+		studyMode.currentIndex--;
+		updateStudyCard();
+	} else {
+		// Loop to end
+		studyMode.currentIndex = studyMode.cards.length - 1;
+		updateStudyCard();
+	}
+}
+
+function shuffleCards() {
+	// Fisher-Yates shuffle
+	for (let i = studyMode.cards.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[studyMode.cards[i], studyMode.cards[j]] = [studyMode.cards[j], studyMode.cards[i]];
+	}
+
+	studyMode.currentIndex = 0;
+	updateStudyCard();
+}
+
+function toggleStudyCardFlip() {
+	studyCard.classList.toggle('flipped');
+}
+
+// ================================
+// Export/Import Functions
+// ================================
+function exportData() {
+	const data = {
+		todos,
+		notes,
+		flashcards,
+		exportDate: new Date().toISOString(),
+		version: '1.0'
+	};
+
+	const json = JSON.stringify(data, null, 2);
+	const blob = new Blob([json], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = `studyhub-data-${new Date().toISOString().split('T')[0]}.json`;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	URL.revokeObjectURL(url);
+
+	console.log('✅ Données exportées avec succès !');
+}
+
+function importData() {
+	importFileInput.click();
+}
+
+function handleFileImport(event) {
+	const file = event.target.files[0];
+	if (!file) return;
+
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		try {
+			const data = JSON.parse(e.target.result);
+
+			// Validate data structure
+			if (!data.version || !Array.isArray(data.todos)) {
+				throw new Error('Format de fichier invalide');
+			}
+
+			// Confirm import
+			const confirmed = confirm(
+				`Voulez-vous importer ces données ?\n\n` +
+				`- ${data.todos?.length || 0} tâches\n` +
+				`- ${data.notes?.length || 0} notes\n` +
+				`- ${data.flashcards?.length || 0} flashcards\n\n` +
+				`⚠️ Cela écrasera vos données actuelles !`
+			);
+
+			if (confirmed) {
+				todos = data.todos || [];
+				notes = data.notes || [];
+				flashcards = data.flashcards || [];
+
+				renderTodos();
+				updateTodoStats();
+				renderNotes();
+				renderFlashcards();
+				saveToLocalStorage();
+
+				console.log('✅ Données importées avec succès !');
+				alert('Données importées avec succès !');
+			}
+		} catch (error) {
+			console.error('Erreur lors de l\'import:', error);
+			alert('Erreur: Fichier invalide ou corrompu.');
+		}
+	};
+
+	reader.readAsText(file);
+
+	// Reset input
+	event.target.value = '';
+}
+
+// ================================
 // Event Listeners
 // ================================
 
@@ -433,6 +658,58 @@ flashcardForm.addEventListener('submit', (e) => {
 });
 
 flashcardRandomBtn.addEventListener('click', showRandomFlashcard);
+
+// Study Mode
+flashcardStudyBtn.addEventListener('click', openStudyMode);
+
+modalClose.addEventListener('click', closeStudyMode);
+modalOverlay.addEventListener('click', closeStudyMode);
+
+studyCard.addEventListener('click', toggleStudyCardFlip);
+
+studyPrevBtn.addEventListener('click', prevCard);
+studyNextBtn.addEventListener('click', nextCard');
+studyShuffleBtn.addEventListener('click', shuffleCards);
+
+studyAutoFlipCheckbox.addEventListener('change', (e) => {
+	studyMode.autoFlip = e.target.checked;
+});
+
+// Keyboard navigation in study mode
+document.addEventListener('keydown', (e) => {
+	if (studyMode.isActive) {
+		if (e.key === 'ArrowLeft') {
+			e.preventDefault();
+			prevCard();
+		} else if (e.key === 'ArrowRight') {
+			e.preventDefault();
+			nextCard();
+		} else if (e.key === ' ' || e.key === 'Enter') {
+			e.preventDefault();
+			toggleStudyCardFlip();
+		} else if (e.key === 'Escape') {
+			closeStudyMode();
+		}
+	}
+});
+
+// Todo Filters
+filterBtns.forEach(btn => {
+	btn.addEventListener('click', () => {
+		// Update active state
+		filterBtns.forEach(b => b.classList.remove('active'));
+		btn.classList.add('active');
+
+		// Update filter
+		todoFilter = btn.dataset.filter;
+		renderTodos();
+	});
+});
+
+// Export/Import
+exportBtn.addEventListener('click', exportData);
+importBtn.addEventListener('click', importData);
+importFileInput.addEventListener('change', handleFileImport);
 
 // ================================
 // Notification Permission
